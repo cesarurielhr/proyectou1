@@ -4,7 +4,7 @@ const { getFirestore } = require("firebase/firestore");
 // TODO: Add SDKs for Firebase products that you want to use
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB6B7U5MzpihTx_w5LaT15VFFUL0C45LJc",
+  apiKey: "process.env.FIREBASE_API_KEY",
   authDomain: "proyectou1servweb.firebaseapp.com",
   projectId: "proyectou1servweb",
   storageBucket: "proyectou1servweb.appspot.com",
