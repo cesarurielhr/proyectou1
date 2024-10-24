@@ -1,4 +1,6 @@
-let tasks = [
+const tasksModel = require ('../models/tasks')
+
+/*let task = [
   {
     id: 1,
     title: "Tarea 1",
@@ -14,48 +16,56 @@ let tasks = [
     title: "Tarea 3",
     description: "Descripción de la Tarea 3",
   },
-];
-function getAllTasks() {
-  return tasks;
+];*/
+async function getAllTasks(req, res) {
+  const tasks = await tasksModel.getAllTasks();
+  
+  if (tasks.length > 0) 
+    res.status(200).json(tasks);
+  else 
+    res.status(404).json({ code:404, message: "No se encontraron proyectos" });
 }
 
-function createTask(title, description) {
-  const newTask = {
-    id: newID(),
-    title,
-    description,
-  };
-  tasks.push(newTask);
-  return newTask;
+async function createTask(req, res) {
+  const newTask = 
+    await tasksModel.createTask(req.body);
+  res.status(200).json({message: "Tarea Creada",id: newTask.id});
 }
 
-function getTaskById(id) {
-  id = parseInt(id);
-  const taskFound = tasks.find((task) => {
-    task.id === id;
-  });
-  //console.log(taskFound);
-  return taskFound;
+async function getTaskById(req,res) {
+  const {id}  = req.params; 
+  console.log("Task ID: " + id);
+  const task = await tasksModel.getTaskById(id);
+    if(task) 
+      res.status(200).json(task);
+    else 
+      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
 }
 
-function updateTask(taskToUpdated) {
-  taskToUpdated.id = parseInt(taskToUpdated.id);
-  tasks = tasks.map((t) => (t.id === taskToUpdated.id ? taskToUpdated : t));
-  return taskToUpdated;
+async function updateTask(req,res) {
+  const {idu}  = req.params; 
+  console.log("Task ID: " + idu);
+  const data = req.body;
+  const task = await tasksModel.updateTask(idu, data);
+    if(task) 
+      res.status(200).json(task);
+    else 
+      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
+  
 }
 
-function deleteTask(id) {
-  const _id = parseInt(id);
-  const taskToDelete = getTaskById(_id);
-  console.log("task to delete: " + taskToDelete);
-  tasks = tasks.filter((task) => task.id !== _id);
-  return taskToDelete;
+async function deleteTask(req,res) {
+  const {idd} = req.params; 
+  
+  const task = await tasksModel.deleteTask(idd);
+    if(task) 
+      res.status(200).json("Tarea eliminada ");
+    else 
+      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
 }
 
-function newID() {
-  const maxID = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) : 0;
-  return maxID + 1;
-}
+
+
 
 module.exports = {
   getAllTasks,
