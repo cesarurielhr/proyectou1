@@ -65,8 +65,6 @@ async function deleteTask(req,res) {
 }
 
 
-
-
 module.exports = {
   getAllTasks,
   createTask,

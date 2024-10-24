@@ -9,13 +9,4 @@ router.post('/', taskController.createTask);
 router.put('/:idu', taskController.updateTask);
 router.delete('/:idd', taskController.deleteTask);
 
-/*
-router.put('/', (req, res) => {
-
-router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    const taskDeleted = taskController.deleteTask(id);
-    res.status(200).json(taskDeleted);
-});
-*/
 module.exports = router;

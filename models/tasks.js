@@ -21,16 +21,16 @@ async function getTaskById(id) {
  
   try {
  
-    const docRef = doc(db, "tasks",id);  // Referencia al documento con el Id proporcionado
-    const docSnap = await getDoc(docRef); // Obtén el documento
+    const docRef = doc(db, "tasks",id);  
+    const docSnap = await getDoc(docRef); 
 
     if (docSnap.exists()) {
-      const data = docSnap.data(); // Extrae los datos del documento
-      data.id = docSnap.id;        // Incluye el id del documento en los datos
-      return data;                 // Retorna los datos de la tarea
+      const data = docSnap.data(); 
+      data.id = docSnap.id;        
+      return data;                 
     } else {
       console.log("No se encontró ninguna tarea con ese ID.");
-      return null;                 // Si no existe, retorna null o puedes manejar el error
+      return null;                 
     }
   } catch (error) {
     console.error("Error obteniendo la tarea:", error);
@@ -60,15 +60,15 @@ async function createTask(data) {
 }
 
 async function updateTask(id, data) {
-  const taskRef = doc(db, "tasks", id); // Referencia al documento específico
+  const taskRef = doc(db, "tasks", id); 
   const editTask = {
     completed: data.completed
   };
 
   try {
-    await updateDoc(taskRef, editTask); // Actualiza solo los campos especificados
+    await updateDoc(taskRef, editTask);
     console.log("Documento actualizado con ID: ", id);
-    editTask.id = id; // Incluye el ID del documento en los datos actualizados
+    editTask.id = id; 
   } catch (e) {
     console.error("Error actualizando el documento: ", e);
     throw new Error("Error actualizando la tarea");
@@ -79,8 +79,8 @@ async function updateTask(id, data) {
 
 async function deleteTask(id) {
   try {
-    const taskRef = doc(db, "tasks", id);  // Referencia al documento con el ID proporcionado
-    await deleteDoc(taskRef);              // Elimina el documento de Firestore
+    const taskRef = doc(db, "tasks", id);  
+    await deleteDoc(taskRef);              
     console.log(`Tarea con ID: ${id} eliminada correctamente.`);
     return { success: true, message: `Tarea con ID: ${id} eliminada correctamente.` };
   } catch (e) {
