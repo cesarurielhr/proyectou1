@@ -1,6 +1,4 @@
-const { collection, getDocs,getDoc,doc, addDoc,setDoc,updateDoc, deleteDoc } = require("firebase/firestore");
 const { v4: uuidv4 } = require("uuid");
-const { db } = require("../firebaseConfig");
 const { taskController } = require("../controllers/taskController");
 
 
