@@ -79,10 +79,17 @@ async function updateTask(id, data) {
 
 async function deleteTask(id) {
   try {
-    const taskRef = doc(db, "tasks", id);  
-    await deleteDoc(taskRef);              
-    console.log(`Tarea con ID: ${id} eliminada correctamente.`);
-    return { success: true, message: `Tarea con ID: ${id} eliminada correctamente.` };
+    const taskRef = doc(db, "tasks", id); 
+   const taskSnap = await getDoc(taskRef); // Verificar si el documento existe
+    
+    if (taskSnap.exists()) {
+      await deleteDoc(taskRef);  
+      console.log(`Tarea con ID: ${id} eliminada correctamente.`);
+      return true;
+    } else {
+      console.log(`Tarea con ID: ${id} no se encontró.`);
+      return false;
+    }
   } catch (e) {
     console.error("Error eliminando la tarea: ", e);
     throw new Error("Error eliminando la tarea");

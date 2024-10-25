@@ -23,7 +23,7 @@ async function getAllTasks(req, res) {
   if (tasks.length > 0) 
     res.status(200).json(tasks);
   else 
-    res.status(404).json({ code:404, message: "No se encontraron proyectos" });
+    res.status(404).json({ code:404, message: "No se encontraron tareas" });
 }
 
 async function createTask(req, res) {
@@ -48,7 +48,7 @@ async function updateTask(req,res) {
   const data = req.body;
   const task = await tasksModel.updateTask(idu, data);
     if(task) 
-      res.status(200).json(task);
+      res.status(200).json({code:200, message:"Tareas actualizada exitosamente"});
     else 
       res.status(404).json({ code: 404, message: "Tarea no encontrada" });
   
@@ -58,10 +58,11 @@ async function deleteTask(req,res) {
   const {idd} = req.params; 
   
   const task = await tasksModel.deleteTask(idd);
-    if(task) 
-      res.status(200).json("Tarea eliminada ");
-    else 
+    if(task) {
+      res.status(200).json("Tarea eliminada exitosamente");
+    }else {
       res.status(404).json({ code: 404, message: "Tarea no encontrada" });
+    }
 }
 
 
