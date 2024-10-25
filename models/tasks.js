@@ -4,8 +4,8 @@ const { db } = require("../firebaseConfig");
 const { taskController } = require("../controllers/taskController");
 
 
-async function getAllTasks() {
-  const querySnapshot = await getDocs(collection(db, "tasks"));
+async function getAllTasks(username) {
+  const querySnapshot = await getDocs(collection(db, "users",username,"tasks"));
   const tasks = querySnapshot.docs.map(doc => {
     
     data = doc.data();
@@ -17,11 +17,11 @@ async function getAllTasks() {
   return tasks;
 }
 
-async function getTaskById(id) {
+async function getTaskById(username, id) {
  
   try {
  
-    const docRef = doc(db, "tasks",id);  
+    const docRef = doc(db, "users",username,"tasks",id);  
     const docSnap = await getDoc(docRef); 
 
     if (docSnap.exists()) {
@@ -37,7 +37,7 @@ async function getTaskById(id) {
   }
 }
 
-async function createTask(data) {
+async function createTask(username,data) {
 
   let docRef; 
   const newTask = {
@@ -47,7 +47,7 @@ async function createTask(data) {
     completed: false
   }
   try {
-    docRef = await addDoc(collection(db, "tasks"), newTask);
+    docRef = await addDoc(collection(db, "users",username,"tasks"), newTask);
     console.log("Document added with ID: ", docRef.id);
     newTask.id = docRef.id;
 
@@ -59,8 +59,8 @@ async function createTask(data) {
   return newTask;
 }
 
-async function updateTask(id, data) {
-  const taskRef = doc(db, "tasks", id); 
+async function updateTask(username,id, data) {
+  const taskRef = doc(db,"users",username, "tasks", id); 
   const editTask = {
     completed: data.completed
   };
@@ -77,9 +77,9 @@ async function updateTask(id, data) {
   return editTask;
 }
 
-async function deleteTask(id) {
+async function deleteTask(username,id) {
   try {
-    const taskRef = doc(db, "tasks", id); 
+    const taskRef = doc(db,"users",username, "tasks", id); 
    const taskSnap = await getDoc(taskRef); // Verificar si el documento existe
     
     if (taskSnap.exists()) {
@@ -92,8 +92,8 @@ async function deleteTask(id) {
     }
   } catch (e) {
     console.error("Error eliminando la tarea: ", e);
-    throw new Error("Error eliminando la tarea");
-  }
+    
+}
 }
 
 module.exports = {

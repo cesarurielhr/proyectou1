@@ -1,4 +1,5 @@
 const tasksModel = require ('../models/tasks')
+const authController = require ('../middleware/authMiddleware');
 
 /*let task = [
   {
@@ -18,8 +19,9 @@ const tasksModel = require ('../models/tasks')
   },
 ];*/
 async function getAllTasks(req, res) {
-  const tasks = await tasksModel.getAllTasks();
-  
+  const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
+  const tasks = await tasksModel.getAllTasks(username);
+  console.log(req.user.username);
   if (tasks.length > 0) 
     res.status(200).json(tasks);
   else 
@@ -27,15 +29,17 @@ async function getAllTasks(req, res) {
 }
 
 async function createTask(req, res) {
+   const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
   const newTask = 
-    await tasksModel.createTask(req.body);
+    await tasksModel.createTask(username,req.body);
   res.status(200).json({message: "Tarea Creada",id: newTask.id});
 }
 
 async function getTaskById(req,res) {
+  const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
   const {id}  = req.params; 
   console.log("Task ID: " + id);
-  const task = await tasksModel.getTaskById(id);
+  const task = await tasksModel.getTaskById(username,id);
     if(task) 
       res.status(200).json(task);
     else 
@@ -43,10 +47,11 @@ async function getTaskById(req,res) {
 }
 
 async function updateTask(req,res) {
+  const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
   const {idu}  = req.params; 
   console.log("Task ID: " + idu);
   const data = req.body;
-  const task = await tasksModel.updateTask(idu, data);
+  const task = await tasksModel.updateTask(username,idu, data);
     if(task) 
       res.status(200).json({code:200, message:"Tareas actualizada exitosamente"});
     else 
@@ -55,9 +60,10 @@ async function updateTask(req,res) {
 }
 
 async function deleteTask(req,res) {
+  const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
   const {idd} = req.params; 
   
-  const task = await tasksModel.deleteTask(idd);
+  const task = await tasksModel.deleteTask(username,idd);
     if(task) {
       res.status(200).json("Tarea eliminada exitosamente");
     }else {

@@ -6,8 +6,12 @@ let users = [
     password: bcrypt.hashSync("12345", 10), // Contraseña encriptada
   },
   {
-    username: "user",
-    password: bcrypt.hashSync("password", 10), // Contraseña encriptada
+    username: "lino",
+    password: bcrypt.hashSync("12345", 10), // Contraseña encriptada
+  },
+  {
+    username: "jose",
+    password: bcrypt.hashSync("12345", 10), // Contraseña encriptada
   },
 ];
 
