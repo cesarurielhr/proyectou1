@@ -1,23 +1,6 @@
 const tasksModel = require ('../models/tasks')
 const authController = require ('../middleware/authMiddleware');
 
-/*let task = [
-  {
-    id: 1,
-    title: "Tarea 1",
-    description: "Descripción de la Tarea 1",
-  },
-  {
-    id: 2,
-    title: "Tarea 2",
-    description: "Descripción de la Tarea 2",
-  },
-  {
-    id: 3,
-    title: "Tarea 3",
-    description: "Descripción de la Tarea 3",
-  },
-];*/
 async function getAllTasks(req, res) {
   const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
   const tasks = await tasksModel.getAllTasks(username);
@@ -47,7 +30,7 @@ async function getTaskById(req,res) {
 }
 
 async function updateTask(req,res) {
-  const username = req.user.username;  // Obtener el nombre de usuario de la petición del usuario logueado
+  const username = req.user.username;// Obtener el nombre de usuario de la petición del usuario logueado
   const {idu}  = req.params; 
   console.log("Task ID: " + idu);
   const data = req.body;

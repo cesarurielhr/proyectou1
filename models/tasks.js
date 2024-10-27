@@ -60,15 +60,21 @@ async function createTask(username,data) {
 }
 
 async function updateTask(username,id, data) {
-  const taskRef = doc(db,"users",username, "tasks", id); 
+  const taskRef = doc(db,"users",username, "tasks", id);
+  const taskSnap = await getDoc(taskRef); // Verificar si el documento existe 
   const editTask = {
     completed: data.completed
   };
 
   try {
+    if (taskSnap.exists()) {
     await updateDoc(taskRef, editTask);
     console.log("Documento actualizado con ID: ", id);
     editTask.id = id; 
+    } else {
+      console.log("No se encontró ninguna tarea con ese ID.");
+      return null;
+    }  
   } catch (e) {
     console.error("Error actualizando el documento: ", e);
     throw new Error("Error actualizando la tarea");
