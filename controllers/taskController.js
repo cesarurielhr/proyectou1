@@ -1,74 +1,61 @@
-const tasksModel = require ('../models/tasks')
+// taskController.js
+const taskService = require('../services/taskService');
 
-/*let task = [
-  {
-    id: 1,
-    title: "Tarea 1",
-    description: "Descripción de la Tarea 1",
-  },
-  {
-    id: 2,
-    title: "Tarea 2",
-    description: "Descripción de la Tarea 2",
-  },
-  {
-    id: 3,
-    title: "Tarea 3",
-    description: "Descripción de la Tarea 3",
-  },
-];*/
-async function getAllTasks(req, res) {
-  const tasks = await tasksModel.getAllTasks();
-  
-  if (tasks.length > 0) 
-    res.status(200).json(tasks);
-  else 
-    res.status(404).json({ code:404, message: "No se encontraron proyectos" });
+// Controlador para agregar una tarea a un usuario
+async function addTaskToUser(req, res) {
+    const username = req.params.username;
+    const taskData = req.body;
+
+    try {
+        const newTask = await taskService.addTaskToUser(username, taskData);
+        res.status(201).json(newTask);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al agregar la tarea al usuario' });
+    }
 }
 
-async function createTask(req, res) {
-  const newTask = 
-    await tasksModel.createTask(req.body);
-  res.status(200).json({message: "Tarea Creada",id: newTask.id});
+// Controlador para obtener las tareas de un usuario
+async function getTasksByUser(req, res) {
+    const username = req.params.username;
+
+    try {
+        const tasks = await taskService.getTasksByUser(username);
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener las tareas del usuario' });
+    }
 }
 
-async function getTaskById(req,res) {
-  const {id}  = req.params; 
-  console.log("Task ID: " + id);
-  const task = await tasksModel.getTaskById(id);
-    if(task) 
-      res.status(200).json(task);
-    else 
-      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
+// Actualizar una tarea de un usuario
+async function updateTaskById(req, res) {
+    const username = req.params.username;
+    const taskId = req.params.taskId;
+    const taskData = req.body;
+
+    try {
+        const updatedTask = await taskService.updateTaskById(username, taskId, taskData);
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
 
-async function updateTask(req,res) {
-  const {idu}  = req.params; 
-  console.log("Task ID: " + idu);
-  const data = req.body;
-  const task = await tasksModel.updateTask(idu, data);
-    if(task) 
-      res.status(200).json(task);
-    else 
-      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
-  
-}
+// Eliminar una tarea de un usuario
+async function deleteTaskById(req, res) {
+    const username = req.params.username;
+    const taskId = req.params.taskId;
 
-async function deleteTask(req,res) {
-  const {idd} = req.params; 
-  
-  const task = await tasksModel.deleteTask(idd);
-    if(task) 
-      res.status(200).json("Tarea eliminada ");
-    else 
-      res.status(404).json({ code: 404, message: "Tarea no encontrada" });
+    try {
+        const deletedTask = await taskService.deleteTaskById(username, taskId);
+        res.status(200).json({ message: 'Tarea eliminada exitosamente', task: deletedTask });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
-
 
 module.exports = {
-  getAllTasks,
-  createTask,
-  getTaskById,
-  updateTask,
-  deleteTask,
+    addTaskToUser,
+    getTasksByUser,
+    updateTaskById,
+    deleteTaskById
 };

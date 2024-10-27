@@ -1,0 +1,38 @@
+// taskRoutes.js
+const express = require('express');
+const router = express.Router();
+const taskController = require('../controllers/taskController');
+const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+// Endpoint de login para obtener el token JWT
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username });
+        if (user && await bcrypt.compare(password, user.password)) {
+            const token = jwt.sign({ id: user._id, username: user.username }, '123', { expiresIn: '1h' });
+            return res.json({ token });
+        }
+        res.status(401).json({ error: 'Credenciales inválidas' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error en el proceso de autenticación' });
+    }
+});
+
+// Rutas de tareas
+router.get('/:username/tareas', taskController.getAllTasks);
+router.post('/:username/tareas', taskController.createTask);
+router.put('/:username/tareas/:id', taskController.updateTaskById);
+router.delete('/:username/tareas/:id', taskController.deleteTaskById);
+//router.get('/agrupado', taskController.getTasksGroupedByUser);
+
+// Ruta para agregar una tarea a un usuario
+router.post('/:username/tareas', taskController.addTaskToUser);
+// Ruta para obtener las tareas de un usuario
+router.get('/:username/tareas', taskController.getTasksByUser);
+
+
+
+module.exports = router;
