@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "8e370aa8-8dd5-4a1f-b85e-c0f6f31f2556",
+		"name": "Pruebas Mongo el bueno xd",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37983961"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3020/auth/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3020/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3020",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3020/auth/login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzMwMTY3ODc2LCJleHAiOjE3MzAxNzE0NzZ9.EXBuY6uoMwPVUFrfqX_pZxIhKNxiY3gZ4d_GNnSIkf8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3020/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3020",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3020/tareas/6720476d24daf278af65d423",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNlc2FyIiwiaWF0IjoxNzMwMTY4NjUzLCJleHAiOjE3MzAxNzIyNTN9.8sUgrO6NWvMvpr_MzNk9YaTmebkCiaiKolwbOUGpz-E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"titulo\":\"Matematicas III\",\r\n    \"descripcion\":\"Suma de fracciones parciales y ED\",\r\n    \"estado\":true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3020/tareas/6720476d24daf278af65d423",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3020",
+					"path": [
+						"tareas",
+						"6720476d24daf278af65d423"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
