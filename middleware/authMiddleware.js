@@ -1,19 +1,29 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = require('../controllers/authController').JWT_SECRET;
 
-// Middleware de autenticación
-function authenticate(req, res, next) {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).json({ error: 'Acceso no autorizado' });
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  console.log(authHeader);
+  const token = authHeader && authHeader.split(' ')[1];
+  if(!token)
+    return res.status(403).json({ code:403, message: 'Token requerido' });
+
+  jwt.verify(token, JWT_SECRET, (err, user) =>{
+    console.log(err);
+    if(err) {
+      switch(err.name) {
+        case 'JsonWebTokenError':
+          return res.status(403).json({ code: 403, message: 'Token inválido' });
+        case 'TokenExpiredError':
+          return res.status(401).json({ code: 401, message: 'Token expirado' });
+        default:
+          return res.status(400).json({ code: 400, message: 'Error al verificar el token' });
+      }
     }
 
-    try {
-        const decoded = jwt.verify(token, '123'); // Cambia '123' por tu clave secreta real
-        req.user = decoded; // Almacenar información del usuario en la solicitud
-        next(); // Llamar al siguiente middleware o controlador
-    } catch (error) {
-        res.status(401).json({ error: 'Token no válido' });
-    }
+    req.user = user;
+    next();
+  });
 }
 
-module.exports = authenticate;
+module.exports = authenticateToken;

@@ -1,12 +1,12 @@
-// taskModel.js
 const mongoose = require('mongoose');
 
-const taskSchema = new mongoose.Schema({
-    username: { type: String, required: true }, // Relación con el usuario
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    status: { type: Boolean, default: false }
+const tareaSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  titulo: { type: String, required: true },
+  descripcion: { type: String, required: false },
+  estado: { type: Boolean, default: false }
 });
 
-const Task = mongoose.model('Task', taskSchema);
-module.exports = Task;
+const Tarea = mongoose.model('Tarea', tareaSchema);
+
+module.exports = Tarea;

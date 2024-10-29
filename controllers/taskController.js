@@ -1,61 +1,112 @@
-// taskController.js
-const taskService = require('../services/taskService');
+const taskModel = require("../models/taskModel");
 
-// Controlador para agregar una tarea a un usuario
-async function addTaskToUser(req, res) {
-    const username = req.params.username;
-    const taskData = req.body;
+async function getAllTasks(req, res) {
+  const username = req.user.username;
+  
+  const tareas = await taskModel.find();
 
-    try {
-        const newTask = await taskService.addTaskToUser(username, taskData);
-        res.status(201).json(newTask);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al agregar la tarea al usuario' });
-    }
+  const tareasPorUsuario = tareas.filter((tarea) => tarea.username === username);
+
+  if(!tareasPorUsuario || tareasPorUsuario.length == 0)
+    res.status(404).json({ code:404, message: "No se encontraron tareas" });
+
+  if (tareasPorUsuario.length > 0) 
+    res.status(200).json(tareasPorUsuario);
 }
 
-// Controlador para obtener las tareas de un usuario
-async function getTasksByUser(req, res) {
-    const username = req.params.username;
+async function createTask(req, res) {
+  const username = req.user.username;
+  //Validaciones de estructura
 
-    try {
-        const tasks = await taskService.getTasksByUser(username);
-        res.status(200).json(tasks);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener las tareas del usuario' });
-    }
+  if(!req.body.titulo){
+    return res.status(400).json({message: "El atributo 'titulo' es requerido! "});
+  }
+
+  const nuevaTarea = new taskModel({
+    username: username, 
+    titulo: req.body.titulo,
+    descripcion: req.body.descripcion || "",
+    estado: false
+  });
+
+  try {
+    await nuevaTarea.save();
+    res.status(201).json(nuevaTarea);
+  } catch (error) {
+    res.status(500).json({ message: "Error al guardar la tarea", error: error.message });
+  }
 }
 
-// Actualizar una tarea de un usuario
-async function updateTaskById(req, res) {
-    const username = req.params.username;
-    const taskId = req.params.taskId;
-    const taskData = req.body;
+async function updateTask(req, res) {
+  const username = req.user.username;
+  const taskId = req.params.id;
 
-    try {
-        const updatedTask = await taskService.updateTaskById(username, taskId, taskData);
-        res.status(200).json(updatedTask);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+  // Validaciones
+  if (!req.body.titulo) {
+    return res.status(400).json({ message: "El atributo 'titulo' es requerido!" });
+  }
+
+  const filter = {
+    username,
+    _id: taskId,
+  };
+
+  const update = {
+    titulo: req.body.titulo,
+  };
+
+  // Solo agrega `descripcion` si está presente en el body de la solicitud
+  if (req.body.descripcion !== undefined) {
+    update.descripcion = req.body.descripcion;
+  }
+
+  // Solo agrega `estado` si está presente y es de tipo booleano
+  if (req.body.estado !== undefined) {
+    if (typeof req.body.estado !== "boolean") {
+      return res.status(400).json({ message: "El atributo 'estado' debe ser de tipo booleano!" });
     }
+    update.estado = req.body.estado;
+  }
+
+  try {
+    const updatedTask = await taskModel.findOneAndUpdate(filter, update, { new: true });
+
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Tarea no encontrada o no autorizada para actualizar" });
+    }
+
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar la tarea", error: error.message });
+  }
 }
 
-// Eliminar una tarea de un usuario
-async function deleteTaskById(req, res) {
-    const username = req.params.username;
-    const taskId = req.params.taskId;
 
-    try {
-        const deletedTask = await taskService.deleteTaskById(username, taskId);
-        res.status(200).json({ message: 'Tarea eliminada exitosamente', task: deletedTask });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+async function deleteTask(req, res) {
+  const username = req.user.username;
+  const taskId = req.params.id;
+
+  const filter = {
+    username,
+    _id: taskId,
+  };
+
+  try {
+    const deletedTask = await taskModel.findOneAndDelete(filter);
+
+    if (!deletedTask) {
+      return res.status(404).json({ message: "Tarea no encontrada o no autorizada para eliminar" });
     }
+
+    res.status(200).json(deletedTask);
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar la tarea", error: error.message });
+  }
 }
 
 module.exports = {
-    addTaskToUser,
-    getTasksByUser,
-    updateTaskById,
-    deleteTaskById
-};
+  getAllTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+}

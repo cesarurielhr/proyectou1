@@ -1,25 +1,10 @@
-// userModel.js
 const mongoose = require('mongoose');
 
-const taskSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    status: { type: Boolean, default: false }
+const usuarioSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true }
 });
 
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    tasks: [taskSchema] // Campo embebido de tareas
-});
+const Usuario = mongoose.model('Usuario', usuarioSchema);
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = Usuario;

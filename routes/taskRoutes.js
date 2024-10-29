@@ -1,11 +1,16 @@
-// taskRoutes.js
 const express = require('express');
-const router = express.Router();
-const taskController = require('../controllers/taskController');
 
-router.post('/:username/tareas', taskController.addTaskToUser);
-router.get('/:username/tareas', taskController.getTasksByUser);
-router.put('/:username/tareas/:taskId', taskController.updateTaskById);
-router.delete('/:username/tareas/:taskId', taskController.deleteTaskById);
+const taskController 
+    = require('../controllers/taskController');
+
+const authenticateToken = 
+    require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+router.get('/', authenticateToken, taskController.getAllTasks);
+router.post('/', authenticateToken, taskController.createTask);
+router.put('/:id', authenticateToken, taskController.updateTask);
+router.delete('/:id', authenticateToken, taskController.deleteTask);
 
 module.exports = router;
